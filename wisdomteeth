@@ -1,0 +1,32 @@
+
+# basic stuff. installing packages and creating the data frame
+install.packages("tm")
+install.packages("wordcloud")
+library(tm)
+library(wordcloud)
+wttweets<-searchTwitter("#wisdomteeth",n=2000,cainfo="cacert.pem")
+df<-do.call("rbind", lapply(wttweets, as.data.frame)) 
+dim(df) #check dimensions
+
+# make corpus out of the data frame
+wtcorpus<-Corpus(VectorSource(df$text)
+wtcorpus<-tm_map(wtcorpus,tolower)
+wtcorpus<-tm_map(wtcorpus,removePunctuation)
+wtcorpus<-tm_map(wtcorpus,removeNumbers)
+wtcorpus<-tm_map(wtcorpus,removeWords,stopwords("english"))
+
+# building the document term matrix
+wtdtm<-TermDocumentMatrix(wtcorpus, control=list(minWordLength=1))
+
+# some association analyses
+findFreqTerms(wtdtm,lowfreg=10)
+findAssocs(wtdtm, "pain", 0.30) # which words are associated to the pain (awful..?)
+
+# wordcloud
+pilvi<-as.matrix(wtdtm)
+cumulus<-sort(rowSums(pilvi), decreasing=TRUE)
+nimet<-names(cumulus)
+d<-data.frame(word=nimet, freq=cumulus)
+wordcloud(d$word, d$freq, min.freq=3)
+
+# let´s see if this thing works.
