@@ -4,7 +4,7 @@ install.packages("tm")
 install.packages("wordcloud")
 library(tm)
 library(wordcloud)
-wttweets<-searchTwitter("#wisdomteeth",n=2000,cainfo="cacert.pem")
+wttweets<-searchTwitter("#wisdomteeth",n=200,cainfo="cacert.pem")
 df<-do.call("rbind", lapply(wttweets, as.data.frame)) 
 dim(df) #check dimensions
 
