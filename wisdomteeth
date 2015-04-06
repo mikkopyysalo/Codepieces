@@ -9,7 +9,7 @@ df<-do.call("rbind", lapply(wttweets, as.data.frame))
 dim(df) #check dimensions
 
 # make corpus out of the data frame
-wtcorpus<-Corpus(VectorSource(df$text)
+wtcorpus<-Corpus(VectorSource(df$text))
 wtcorpus<-tm_map(wtcorpus,tolower)
 wtcorpus<-tm_map(wtcorpus,removePunctuation)
 wtcorpus<-tm_map(wtcorpus,removeNumbers)
