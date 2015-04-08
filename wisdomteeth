@@ -28,7 +28,8 @@ wtcorpus<-tm_map(wtcorpus, function(x) iconv(x, to="UTF-8-MAC", sub="byte"),lazy
 
 
 # building the document term matrix
-wtdtm<-TermDocumentMatrix(wtcorpus, control=list(minWordLength=1)) #This doesn´t work
+wtdtm<-TermDocumentMatrix(wtcorpus, control=list(minWordLength=1)) #This doesn´t work, tells me: Error in paste(words, collapse = "|") : 
+  argument "words" is missing, with no default. Same thing if I try "wordcloud(wtcorpus)
 
 # some association analyses
 findFreqTerms(wtdtm,lowfreg=10)
