@@ -12,28 +12,30 @@ wttweets<-searchTwitter("#wisdomteeth",n=200,cainfo="cacert.pem")
 
 df<-do.call("rbind", lapply(wttweets, as.data.frame)) 
 
-dim(df) #check dimensions
+#check dimensions
+dim(df) 
+
 df$text<-iconv(enc2utf8(df$text),sub="byte")
 
 wtcorpus<-Corpus(VectorSource(df$text))
 
-wtcorpus<-tm_map(wtcorpus,tolower, lazy=TRUE,mc.cores=1)
+wtcorpus<-tm_map(wtcorpus,tolower, lazy=TRUE)
 
-wtcorpus<-tm_map(wtcorpus,removePunctuation, lazy=TRUE,mc.cores=1)
+wtcorpus<-tm_map(wtcorpus,removePunctuation, lazy=TRUE)
 
-wtcorpus<-tm_map(wtcorpus,removeNumbers, lazy=TRUE, mc.cores=1)
+wtcorpus<-tm_map(wtcorpus,removeNumbers, lazy=TRUE)
 
-wtcorpus<-tm_map(wtcorpus,removeWords,stopwords("english"), lazy=TRUE,mc.cores=1)
+wtcorpus<-tm_map(wtcorpus,removeWords,stopwords("english"), lazy=TRUE)
+wtcorpus<-tm_map(wtcorpus,PlainTextDocument)
 wtcorpus<-tm_map(wtcorpus, function(x) iconv(x, to="UTF-8-MAC", sub="byte"),lazy=TRUE)
 
 
 # building the document term matrix
-wtdtm<-TermDocumentMatrix(wtcorpus, control=list(minWordLength=1)) #This doesn´t work, tells me: Error in paste(words, collapse = "|") : 
-  argument "words" is missing, with no default. Same thing if I try "wordcloud(wtcorpus)
+wtdtm<-TermDocumentMatrix(wtcorpus, control=list(minWordLength=1)) 
 
 # some association analyses
 findFreqTerms(wtdtm,lowfreg=10)
-findAssocs(wtdtm, "pain", 0.30) # which words are associated to the pain (awful..?)
+findAssocs(wtdtm, "pain", 0.30) 
 
 # wordcloud
 pilvi<-as.matrix(wtdtm)
