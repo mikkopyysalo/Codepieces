@@ -31,7 +31,9 @@ wtcorpus<-tm_map(wtcorpus, function(x) iconv(x, to="UTF-8-MAC", sub="byte"),lazy
 
 
 # building the document term matrix
-wtdtm<-TermDocumentMatrix(wtcorpus, control=list(minWordLength=1)) 
+wtdtm<-TermDocumentMatrix(wtcorpus, control=list(minWordLength=1))   #At this stage errors appear: "invalid input" and some error message about "In parallel::mclapply(x, FUN, ...) :
+  all scheduled cores encountered errors in user code" then rest of the code doesn´t work  
+
 
 # some association analyses
 findFreqTerms(wtdtm,lowfreg=10)
