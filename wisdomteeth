@@ -8,7 +8,7 @@ library(tm)
 
 library(wordcloud)
 
-wttweets<-searchTwitter("#wisdomteeth",n=200,cainfo="cacert.pem")
+wttweets<-searchTwitter("#wisdomteeth",n=200)
 
 df<-do.call("rbind", lapply(wttweets, as.data.frame)) 
 
@@ -26,13 +26,11 @@ wtcorpus<-tm_map(wtcorpus,removePunctuation, lazy=TRUE)
 wtcorpus<-tm_map(wtcorpus,removeNumbers, lazy=TRUE)
 
 wtcorpus<-tm_map(wtcorpus,removeWords,stopwords("english"), lazy=TRUE)
-wtcorpus<-tm_map(wtcorpus,PlainTextDocument)
-wtcorpus<-tm_map(wtcorpus, function(x) iconv(x, to="UTF-8-MAC", sub="byte"),lazy=TRUE)
 
+wtcorpus<-tm_map(wtcorpus, content_transformer(function(x) iconv(x, to="UTF-8-MAC", sub="byte"),lazy=TRUE))
 
 # building the document term matrix
-wtdtm<-TermDocumentMatrix(wtcorpus, control=list(minWordLength=1))   #At this stage errors appear: "invalid input" and some error message about "In parallel::mclapply(x, FUN, ...) :
-  all scheduled cores encountered errors in user code" then rest of the code doesn´t work  
+wtdtm<-TermDocumentMatrix(wtcorpus, control=list(minWordLength=1))   
 
 
 # some association analyses
