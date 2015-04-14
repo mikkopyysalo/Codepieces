@@ -7,7 +7,7 @@ install.packages("wordcloud")
 library(tm)
 
 library(wordcloud)
-
+Sys.setenv("MC_CORES" = 1)
 wttweets<-searchTwitter("#wisdomteeth",n=200)
 
 df<-do.call("rbind", lapply(wttweets, as.data.frame)) 
