@@ -28,7 +28,15 @@ wtcorpus<-tm_map(wtcorpus,removeWords,stopwords("english"), lazy=TRUE)
 wtcorpus<-tm_map(wtcorpus, content_transformer(function(x) iconv(x, to="UTF-8-MAC", sub="byte"),lazy=TRUE))
 
 # building the document term matrix
-wtdtm<-TermDocumentMatrix(wtcorpus, control=list(minWordLength=1))   
+wtdtm<-TermDocumentMatrix(wtcorpus, control=list(minWordLength=1)) 
+
+#Still gives me warning:
+
+#Error in UseMethod("meta", x) : 
+  no applicable method for 'meta' applied to an object of class "try-error"
+In addition: Warning message:
+In mclapply(unname(content(x)), termFreq, control) :
+  all scheduled cores encountered errors in user code
 
 
 # some association analyses
