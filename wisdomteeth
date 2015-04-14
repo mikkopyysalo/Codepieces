@@ -15,8 +15,6 @@ df<-do.call("rbind", lapply(wttweets, as.data.frame))
 #check dimensions
 dim(df) 
 
-df$text<-iconv(enc2utf8(df$text),sub="byte")
-
 wtcorpus<-Corpus(VectorSource(df$text))
 
 wtcorpus<-tm_map(wtcorpus,tolower, lazy=TRUE)
