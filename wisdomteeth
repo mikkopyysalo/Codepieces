@@ -1,52 +1,51 @@
+#
+# basic stuff
+install.packages(c("twitteR", "ROAuth", "RCurl"))
+library(twitteR)
+library(ROAuth)
+library(RCurl)
 
-# basic stuff. installing packages and creating the data frame
+#setup_twitter_oauth("XXXXXX","NNNNNN","CCCCCC","HHHHHHH")
+
 install.packages("tm")
-
 install.packages("wordcloud")
-
 library(tm)
-
 library(wordcloud)
+
 Sys.setenv("MC_CORES" = 1)
+
 wttweets<-searchTwitter("#wisdomteeth",n=200)
 
-df<-do.call("rbind", lapply(wttweets, as.data.frame)) 
+wttweets_text <- sapply(wttweets, function(x) x$getText())
 
-#check dimensions
-dim(df) 
+wttweets_text_corpus <- Corpus(VectorSource(wttweets_text))
 
-wtcorpus<-Corpus(VectorSource(df$text))
+wttweets_text_corpus <- tm_map(wttweets_text_corpus,content_transformer(function(x) iconv(x, to='UTF-8-MAC', sub='byte')))
 
-wtcorpus<-tm_map(wtcorpus,tolower, lazy=TRUE)
-
-wtcorpus<-tm_map(wtcorpus,removePunctuation, lazy=TRUE)
-
-wtcorpus<-tm_map(wtcorpus,removeNumbers, lazy=TRUE)
-
-wtcorpus<-tm_map(wtcorpus,removeWords,stopwords("english"), lazy=TRUE)
-
-wtcorpus<-tm_map(wtcorpus, content_transformer(function(x) iconv(x, to="UTF-8-MAC", sub="byte"),lazy=TRUE))
 
 # building the document term matrix
-wtdtm<-TermDocumentMatrix(wtcorpus, control=list(minWordLength=1)) 
 
-#Still gives me warning:
-
-#Error in UseMethod("meta", x) : 
-  no applicable method for 'meta' applied to an object of class "try-error"
-In addition: Warning message:
-In mclapply(unname(content(x)), termFreq, control) :
-  all scheduled cores encountered errors in user code
+wtdtm<-TermDocumentMatrix(wttweets_text_corpus, control=list(minWordLength=1)) 
 
 
 # some association analyses
-findFreqTerms(wtdtm,lowfreg=10)
+
+findFreqTerms(wtdtm)
+
 findAssocs(wtdtm, "pain", 0.30) 
 
+
+
+
 # wordcloud
+
 pilvi<-as.matrix(wtdtm)
+
 cumulus<-sort(rowSums(pilvi), decreasing=TRUE)
+
 nimet<-names(cumulus)
+
 d<-data.frame(word=nimet, freq=cumulus)
+
 wordcloud(d$word, d$freq, min.freq=3)
 
