@@ -22,7 +22,7 @@ wttweets_text_corpus <- Corpus(VectorSource(wttweets_text))
 
 wttweets_text_corpus <- tm_map(wttweets_text_corpus,content_transformer(function(x) iconv(x, to='UTF-8-MAC', sub='byte')))
 RemoveURLs <- function(x) gsub("http[[:alnum:]]*","",x)
-wttweets_text_corpus <- tm_map(wttweets_text_corpus, RemoveURLs)
+wttweets_text_corpus <- tm_map(wttweets_text_corpus, content_transformer(RemoveURLs))
 
 # building the document term matrix
 
