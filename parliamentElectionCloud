@@ -26,9 +26,8 @@ RemoveTC <- function(x) gsub("tc[[:alnum:]]*","",x)
 
 vaalit_text_corpus <- tm_map(vaalit_text_corpus,content_transformer(tolower), mc.cores=1)
 vaalit_text_corpus <- tm_map(vaalit_text_corpus,content_transformer(RemoveURLs), mc.cores=1) #...get rid of links
-vaalit_text_corpus <- tm_map(vaalit_text_corpus,content_transformer(RemoveTC), mc.cores=1)
 vaalit_text_corpus <- tm_map(vaalit_text_corpus, removePunctuation, mc.cores=1)
-
+vaalit_text_corpus <- tm_map(vaalit_text_corpus,content_transformer(RemoveTC), mc.cores=1)
 vaalit_text_corpus <- tm_map(vaalit_text_corpus, function(x)removeWords(x,stopwords("finnish")), mc.cores=1)
 
 wordcloud(vaalit_text_corpus,max.words=300) #beautiful cloud
