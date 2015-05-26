@@ -1,0 +1,11 @@
+oleelliset<-function(data){
+  a<-mean(data)
+  b<-median(data)
+  c<-sd(data)
+  d<-max(data)
+  e<-min(data)
+  nimet<-c("keskiarvo","mediaani","sd","maksimi","minimi")
+  arvot<-c(a,b,c,d,e)
+  taulukko<-data.frame(nimet,arvot)
+  taulukko
+  }
