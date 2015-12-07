@@ -1,11 +1,38 @@
-oleelliset<-function(data){
-  a<-mean(data)
-  b<-median(data)
-  c<-sd(data)
-  d<-max(data)
-  e<-min(data)
-  nimet<-c("keskiarvo","mediaani","sd","maksimi","minimi")
-  arvot<-c(a,b,c,d,e)
-  taulukko<-data.frame(nimet,arvot)
-  taulukko
-  }
+bacteRplot<-function(unruptured,ruptured){
+	require(ggplot2);require(scales)
+	a<-colSums(unruptured)/length(unruptured[,1]);names(a)<-NULL
+	b<-names(unruptured)
+	e<-rep("unruptured",length(names(unruptured)))
+	vuotamaton<-data.frame(b,a,e)
+	names(vuotamaton)<-c("bacteria","percentage","group")
+	c<-colSums(ruptured)/length(ruptured[,1]);names(c)<-NULL
+	d<-names(ruptured)
+	f<-rep("ruptured",length(names(ruptured)))
+	vuotanut<-data.frame(d,c,f)
+	names(vuotanut)<-c("bacteria","percentage","group")
+	kokodata<-rbind(vuotanut,vuotamaton)
+	ggplot(kokodata, aes(bacteria,percentage, fill=group)) + geom_bar(position="dodge",stat="identity",aes(reorder(bacteria,-percentage)))+coord_flip(ylim=c(0,1))+scale_y_continuous(labels=percent, name="")
+	}
+
+NAsToZeros<-function(data){
+	data[is.na(data)]<-0
+	return(data)
+}
+
+posNegNumeric<-function(x){
+	x<-ifelse(x=="pos",1,x)
+	x<-ifelse(x=="neg",0,x)
+}
+
+serialFisher<-function(fishern,fisherm,totalM=0,totalN=0){
+n<-sum(fishern);m<-sum(fisherm);g<-rep(0,length(fishern))
+n<-ifelse(totalN!=0,totalN,n)
+m<-ifelse(totalM!=0,totalM,m)
+for (i in 1:length(fishern)){
+a<-c(fishern[i],n-fishern[i]);b<-c(fisherm[i],m-fisherm[i])
+	fishermatrix<-cbind(a,b)
+	g[i]<-fisher.test(fishermatrix)$p.value
+	}
+	data<-data.frame(fishern,fisherm,g);names(data)<-c("naiset","miehet","p-arvo")
+	return(data)
+	}
